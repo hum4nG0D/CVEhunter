@@ -33,7 +33,6 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.db = void 0;
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "@shared/schema";
@@ -44,4 +43,4 @@ const pool = new Pool({
 });
 
 // Create a Drizzle ORM instance
-exports.db = drizzle(pool, { schema });
+export const db = drizzle(pool, { schema });

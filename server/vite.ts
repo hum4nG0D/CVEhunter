@@ -1,7 +1,7 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer, type ServerOptions } from "vite";
+import * as vite from "vite";
 import type { Logger } from "vite";
 import { type Server } from "http";
 import { fileURLToPath } from 'url';
@@ -31,20 +31,20 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions: ServerOptions = {
+  const serverOptions: vite.ServerOptions = {
     middlewareMode: true,
     hmr: { server },
     allowedHosts: true
   };
 
-  const vite = await createServer({
+  const viteServer = await vite.createServer({
     configFile: path.resolve(__dirname, '../vite.config.ts'),
     customLogger: viteLogger,
     server: serverOptions,
     appType: "custom",
   });
 
-  app.use(vite.middlewares);
+  app.use(viteServer.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
 
@@ -62,10 +62,10 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`,
       );
-      const page = await vite.transformIndexHtml(url, template);
+      const page = await viteServer.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
-      vite.ssrFixStacktrace(e as Error);
+      viteServer.ssrFixStacktrace(e as Error);
       next(e);
     }
   });
