@@ -1,11 +1,14 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer } from "vite";
-import type { Logger, ServerOptions } from "vite";
-import { type Server } from "http";
 import { fileURLToPath } from 'url';
 import { nanoid } from "nanoid";
+import type { Logger, ServerOptions } from "vite";
+import { type Server } from "http";
+
+// Import vite using the package's exports field
+const viteModule = await import('vite');
+const { createServer } = viteModule;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
