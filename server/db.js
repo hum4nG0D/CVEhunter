@@ -34,12 +34,14 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = void 0;
-const node_postgres_1 = require("drizzle-orm/node-postgres");
-const pg_1 = require("pg");
-const schema = __importStar(require("@shared/schema"));
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "@shared/schema";
+
 // Create a PostgreSQL connection pool
-const pool = new pg_1.Pool({
+const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/cvehunter',
 });
+
 // Create a Drizzle ORM instance
-exports.db = (0, node_postgres_1.drizzle)(pool, { schema });
+exports.db = drizzle(pool, { schema });

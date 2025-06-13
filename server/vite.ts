@@ -1,12 +1,23 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer as createViteServer, createLogger } from "vite";
+import { createServer, type ServerOptions } from "vite";
+import type { Logger } from "vite";
 import { type Server } from "http";
-import viteConfig from "../vite.config";
+import { fileURLToPath } from 'url';
 import { nanoid } from "nanoid";
 
-const viteLogger = createLogger();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const viteLogger: Logger = {
+  info: (msg) => console.log(msg),
+  warn: (msg) => console.warn(msg),
+  error: (msg) => console.error(msg),
+  clearScreen: () => {},
+  hasWarned: false,
+  warnOnce: (msg) => console.warn(msg),
+  hasErrorLogged: () => false
+};
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -20,22 +31,15 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
+  const serverOptions: ServerOptions = {
     middlewareMode: true,
     hmr: { server },
-    allowedHosts: true,
+    allowedHosts: true
   };
 
-  const vite = await createViteServer({
-    ...viteConfig,
-    configFile: false,
-    customLogger: {
-      ...viteLogger,
-      error: (msg, options) => {
-        viteLogger.error(msg, options);
-        process.exit(1);
-      },
-    },
+  const vite = await createServer({
+    configFile: path.resolve(__dirname, '../vite.config.ts'),
+    customLogger: viteLogger,
     server: serverOptions,
     appType: "custom",
   });
