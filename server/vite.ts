@@ -1,7 +1,7 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer as createViteServer } from "vite";
+import { createServer } from "vite";
 import type { Logger, ServerOptions } from "vite";
 import { type Server } from "http";
 import { fileURLToPath } from 'url';
@@ -37,7 +37,7 @@ export async function setupVite(app: Express, server: Server) {
     allowedHosts: true
   };
 
-  const viteServer = await createViteServer({
+  const viteServer = await createServer({
     configFile: path.resolve(__dirname, '../vite.config.ts'),
     customLogger: viteLogger,
     server: serverOptions,
