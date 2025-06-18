@@ -5,7 +5,7 @@ import { cveIdSchema, type Cve } from "../shared/schema.js";
 import { z } from "zod";
 import { getAIThreatAnalysis, getShodanData, getEPSSData } from "./services/api.js";
 
-function transformNVDData(cveRecord: Cve, shodanData: any): any {
+function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: number, percentile: number }): any {
   const fullJson = cveRecord.fullJson;
   if (!fullJson) return null;
 
@@ -150,8 +150,8 @@ function transformNVDData(cveRecord: Cve, shodanData: any): any {
     severity: severity || null,
     published: cveData.published || null,
     modified: cveData.lastModified || null,
-    epssScore: null,
-    epssPercentile: null,
+    epssScore: epssData?.score ?? null,
+    epssPercentile: epssData?.percentile ?? null,
     cvssVector: cvssVector || null,
     attackVector: attackVector || null,
     attackComplexity: attackComplexity || null,
@@ -195,13 +195,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ]);
 
       // Transform the data
-      const transformedData = transformNVDData(cveRecord, shodanData);
-      
-      // Add EPSS data
-      if (epssData) {
-        transformedData.epssScore = epssData.score;
-        transformedData.epssPercentile = epssData.percentile;
-      }
+      const transformedData = transformNVDData(cveRecord, shodanData, epssData || undefined);
       
       // Add AI analysis to threat intelligence
       const aiAnalysis = await getAIThreatAnalysis(cveRecord);
