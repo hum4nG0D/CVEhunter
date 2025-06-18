@@ -64,7 +64,7 @@ export default function Home() {
                 <Shield className="text-background text-xl" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] glitch">CVE TRACKER</h1>
+                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] glitch">CVE HUNTER</h1>
                 <p className="text-sm text-muted-foreground">Cybersecurity Vulnerability Intelligence</p>
               </div>
             </div>
@@ -98,50 +98,28 @@ export default function Home() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-[hsl(var(--matrix-green))] bg-background/95 backdrop-blur-sm mt-16">
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h4 className="text-lg font-bold text-[hsl(var(--matrix-green))] mb-4">DATA SOURCES</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Database className="w-4 h-4 mr-2 inline" />National Vulnerability Database (NVD)</li>
                 <li><ShieldAlert className="w-4 h-4 mr-2 inline" />Red Hat Security Advisories</li>
                 <li><ChartLine className="w-4 h-4 mr-2 inline" />EPSS Scoring System</li>
-                <li><Bot className="w-4 h-4 mr-2 inline" />AI-Enhanced Intelligence</li>
+                <li><Bot className="w-4 h-4 mr-2 inline" />AI-Enhanced Threat Analysis</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-lg font-bold text-[hsl(var(--cyber-cyan))] mb-4">THREAT INTELLIGENCE</h4>
+              <h4 className="text-lg font-bold text-[hsl(var(--cyber-cyan))] mb-4">FEATURES</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Shield className="w-4 h-4 mr-2 inline" />Active Exploit Detection</li>
-                <li><Database className="w-4 h-4 mr-2 inline" />Security News Aggregation</li>
-                <li><ShieldAlert className="w-4 h-4 mr-2 inline" />Community Contributions</li>
-                <li><ChartLine className="w-4 h-4 mr-2 inline" />Real-time Alerts</li>
+                <li><Shield className="w-4 h-4 mr-2 inline" />Advanced CVE Search & Analysis</li>
+                <li><Database className="w-4 h-4 mr-2 inline" />Risk Matrix Assessment</li>
+                <li><ShieldAlert className="w-4 h-4 mr-2 inline" />Threat Intelligence Integration</li>
+                <li><ChartLine className="w-4 h-4 mr-2 inline" />Exploit Prediction Scoring</li>
               </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-bold text-[hsl(var(--high))] mb-4">SYSTEM STATUS</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">NVD API</span>
-                  <span className="text-[hsl(var(--matrix-green))]">ONLINE</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">RHEL API</span>
-                  <span className="text-[hsl(var(--matrix-green))]">ONLINE</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">AI Services</span>
-                  <span className="text-[hsl(var(--matrix-green))]">ONLINE</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">EPSS Data</span>
-                  <span className="text-[hsl(var(--matrix-green))]">UPDATED</span>
-                </div>
-              </div>
             </div>
           </div>
           <div className="border-t border-muted mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 CVE Tracker - Cybersecurity Vulnerability Intelligence Platform</p>
-            <p className="mt-2">Data sources: NVD, RHEL, EPSS | Enhanced with AI-powered threat intelligence</p>
+            <p>&copy; 2025 CVE Hunter - Advanced Cybersecurity Vulnerability Intelligence Platform</p>
           </div>
         </div>
       </footer>
