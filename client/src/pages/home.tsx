@@ -116,19 +116,21 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center">
-                  {typedTitle}
-                  <span
-                    className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
-                    style={{
-                      display: 'inline-block',
-                      width: '0.65em', // about the width of a character
-                      height: '1em',
-                      background: 'currentColor',
-                      verticalAlign: 'bottom',
-                      marginLeft: '2px',
-                      borderRadius: '2px'
-                    }}
-                  />
+                  <span style={{ minWidth: `${fullTitle.length}em`, display: 'inline-block' }}>
+                    {typedTitle}
+                    <span
+                      className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
+                      style={{
+                        display: 'inline-block',
+                        width: '0.65em',
+                        height: '1em',
+                        background: 'currentColor',
+                        verticalAlign: 'bottom',
+                        marginLeft: '2px',
+                        borderRadius: '2px'
+                      }}
+                    />
+                  </span>
                 </h1>
                 <p className="text-sm text-muted-foreground">Cybersecurity Vulnerability Intelligence</p>
               </div>
