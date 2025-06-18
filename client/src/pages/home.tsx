@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Shield, Settings, Database, ShieldAlert, ChartLine, Bot } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -14,6 +14,35 @@ export default function Home() {
   const { data: cveCount } = useQuery({
     queryKey: ['/api/cve-count'],
   });
+
+  // Typing animation for the title
+  const fullTitle = "CVE HUNTER";
+  const [typedTitle, setTypedTitle] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    let current = 0;
+    setTypedTitle("");
+    setShowCursor(true);
+    const typing = setInterval(() => {
+      setTypedTitle(fullTitle.slice(0, current + 1));
+      current++;
+      if (current === fullTitle.length) {
+        clearInterval(typing);
+      }
+    }, 120);
+    return () => clearInterval(typing);
+  }, []);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    if (typedTitle.length === fullTitle.length) {
+      const blink = setInterval(() => {
+        setShowCursor((c) => !c);
+      }, 500);
+      return () => clearInterval(blink);
+    }
+  }, [typedTitle, fullTitle]);
 
   const handleCVEFound = (cve: CVEData) => {
     setCurrentCVE(cve);
@@ -64,7 +93,10 @@ export default function Home() {
                 <Shield className="text-background text-xl" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] glitch">CVE HUNTER</h1>
+                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center">
+                  {typedTitle}
+                  <span className={`ml-1 w-2 ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`} style={{fontWeight: 900}}>|</span>
+                </h1>
                 <p className="text-sm text-muted-foreground">Cybersecurity Vulnerability Intelligence</p>
               </div>
             </div>
