@@ -125,9 +125,11 @@ export default function Home() {
                         width: '0.65em',
                         height: '1em',
                         background: 'currentColor',
-                        verticalAlign: 'bottom',
-                        marginLeft: '2px',
-                        borderRadius: '2px'
+                        verticalAlign: 'middle',
+                        marginLeft: '0.05em',
+                        borderRadius: '2px',
+                        position: 'relative',
+                        top: '0.05em',
                       }}
                     />
                   </span>
