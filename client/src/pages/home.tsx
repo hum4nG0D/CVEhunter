@@ -125,11 +125,10 @@ export default function Home() {
                         width: '0.65em',
                         height: '1em',
                         background: 'currentColor',
-                        verticalAlign: 'middle',
+                        verticalAlign: 'text-bottom',
                         marginLeft: '0.05em',
-                        borderRadius: '2px',
                         position: 'relative',
-                        top: '0.05em',
+                        top: 0
                       }}
                     />
                   </span>
