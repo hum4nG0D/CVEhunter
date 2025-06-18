@@ -22,16 +22,36 @@ export default function Home() {
 
   useEffect(() => {
     let current = 0;
+    let typing: NodeJS.Timeout | null = null;
+    let resetTimeout: NodeJS.Timeout | null = null;
     setTypedTitle("");
     setShowCursor(true);
-    const typing = setInterval(() => {
-      setTypedTitle(fullTitle.slice(0, current + 1));
-      current++;
-      if (current === fullTitle.length) {
-        clearInterval(typing);
-      }
-    }, 120);
-    return () => clearInterval(typing);
+
+    const startTyping = () => {
+      typing = setInterval(() => {
+        setTypedTitle((prev) => {
+          const next = fullTitle.slice(0, prev.length + 1);
+          if (next.length === fullTitle.length) {
+            if (typing) clearInterval(typing);
+            // Wait 5 seconds, then reset and start typing again
+            resetTimeout = setTimeout(() => {
+              setTypedTitle("");
+              setShowCursor(true);
+              current = 0;
+              startTyping();
+            }, 5000);
+          }
+          return next;
+        });
+      }, 120);
+    };
+
+    startTyping();
+
+    return () => {
+      if (typing) clearInterval(typing);
+      if (resetTimeout) clearTimeout(resetTimeout);
+    };
   }, []);
 
   // Blinking cursor effect
@@ -41,6 +61,8 @@ export default function Home() {
         setShowCursor((c) => !c);
       }, 500);
       return () => clearInterval(blink);
+    } else {
+      setShowCursor(true);
     }
   }, [typedTitle, fullTitle]);
 
@@ -95,7 +117,18 @@ export default function Home() {
               <div>
                 <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center">
                   {typedTitle}
-                  <span className={`ml-1 w-2 ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`} style={{fontWeight: 900}}>|</span>
+                  <span
+                    className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
+                    style={{
+                      display: 'inline-block',
+                      width: '0.65em', // about the width of a character
+                      height: '1em',
+                      background: 'currentColor',
+                      verticalAlign: 'bottom',
+                      marginLeft: '2px',
+                      borderRadius: '2px'
+                    }}
+                  />
                 </h1>
                 <p className="text-sm text-muted-foreground">Cybersecurity Vulnerability Intelligence</p>
               </div>
