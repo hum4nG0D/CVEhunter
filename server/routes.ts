@@ -74,15 +74,25 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
 
   // Extract weaknesses
   const uniqueWeaknesses = new Map();
-  cveData.weaknesses?.forEach((weakness: { description: { lang: string; value: string }[] }) => {
+  cveData.weaknesses?.forEach((weakness: { type?: string; source?: string; description: { lang: string; value: string }[] }) => {
     const description = weakness.description.find((desc: { lang: string; value: string }) => desc.lang === 'en')?.value;
     if (description) {
-      uniqueWeaknesses.set(description, {
+      // Extract CWE ID from the type field (e.g., "CWE-79")
+      const cweId = weakness.type || 'Unknown';
+      
+      // Create a more structured weakness object
+      const weaknessObj = {
         type: 'Weakness',
-        description,
+        cweId: cweId,
+        title: description,
+        description: description,
         severity: severity || 'Unknown',
-        implication: 'This weakness could lead to security vulnerabilities if not properly addressed'
-      });
+        implication: 'This weakness could lead to security vulnerabilities if not properly addressed',
+        source: weakness.source || 'NVD'
+      };
+      
+      // Use CWE ID as key to avoid duplicates
+      uniqueWeaknesses.set(cweId, weaknessObj);
     }
   });
 
