@@ -49,10 +49,6 @@ export async function getAIThreatAnalysis(cveRecord: Cve): Promise<AIAnalysis | 
     const cweIds = cveData.weaknesses?.map((w: any) => w.type?.replace('Primary:', '').replace('Secondary:', '') || 'Unknown').filter((id: string) => id !== 'Unknown') || [];
     const cweInfo = cweIds.length > 0 ? `CWE IDs: ${cweIds.join(', ')}` : 'No CWE information available';
     
-    // Extract timeline information
-    const published = cveData.published || 'Unknown';
-    const modified = cveData.lastModified || 'Unknown';
-    
     // Extract references for exploitation status
     const references = cveData.references || [];
     const exploitRefs = references.filter((ref: any) => 
@@ -80,40 +76,35 @@ export async function getAIThreatAnalysis(cveRecord: Cve): Promise<AIAnalysis | 
 - Privileges Required: ${privileges}
 - User Interaction: ${userInteraction}
 
-**Timeline:**
-- Published: ${published}
-- Last Modified: ${modified}
-
 **References Found:**
 - Exploit References: ${exploitRefs.length} found
 - Vendor Advisories: ${vendorRefs.length} found
 
 Provide a comprehensive analysis covering:
 
-**1. Exploitation Status**
+**1. Key Risks**
+- What are the main security threats?
+- What can an attacker achieve?
+- Potential attack scenarios
+
+**2. Exploitation Status**
 - Is it known to be exploited in the wild?
 - Any public PoC/exploit available (e.g., Exploit-DB, GitHub)
 - Exploitation likelihood based on available references
 
-**2. Impact Analysis**
+**3. Impact Analysis**
 - Confidentiality / Integrity / Availability impact
-- What can an attacker achieve?
-- Potential attack scenarios
+- Scope and severity of potential damage
 
-**3. Mitigation & Remediation**
+**4. Mitigation & Remediation**
 - Patched version(s) if available
 - Workarounds (if patch not available)
 - Vendor advisory links
 - Recommended immediate actions
 
-**4. CWE Context**
+**5. CWE Context**
 - What type of weakness this represents
 - Common attack patterns for this CWE
-
-**5. Timeline Context**
-- Disclosure date significance
-- Patch availability timeline
-- First seen in the wild (if known)
 
 Keep the analysis concise but comprehensive. Focus on actionable insights for security teams.`;
 
