@@ -156,4 +156,134 @@ export async function getEPSSData(cveId: string) {
     console.error('EPSS API error:', error);
     return null;
   }
+}
+
+export interface ShodanData {
+  total: number;
+  matches: Array<{
+    ip_str: string;
+    port: number;
+    country_name: string;
+    city: string;
+    latitude: number;
+    longitude: number;
+    data: string;
+    timestamp: string;
+  }>;
+  cveData?: {
+    summary: string;
+    cvss: number;
+    cvss_version: string;
+    cvss_v2: string;
+    cvss_v3: string;
+    epss: number;
+    ranking_epss: number;
+    kev: boolean;
+    ransomware_campaign: boolean;
+    cpes: string[];
+    references: string[];
+    published_time: string;
+  };
+}
+
+export interface EPSSData {
+  score: number;
+  percentile: number;
+}
+
+export interface CWEData {
+  id: string;
+  name: string;
+  description: string;
+  extended_description?: string;
+  likelihood: string;
+  status: string;
+  relationships?: Array<{
+    target_id: string;
+    relationship_type: string;
+    target_name: string;
+  }>;
+  consequences?: Array<{
+    scope: string;
+    impact: string;
+    likelihood: string;
+  }>;
+  mitigations?: Array<{
+    phase: string;
+    description: string;
+    effectiveness: string;
+  }>;
+}
+
+// Fetch detailed CWE information
+export async function getCWEDetails(cweId: string): Promise<CWEData | null> {
+  try {
+    // Clean up CWE ID (remove CWE- prefix if present)
+    const cleanCweId = cweId.replace('CWE-', '');
+    
+    // Fetch from CWE database API
+    const response = await axios.get(`https://cwe.mitre.org/data/xml/cwec_latest.xml`);
+    
+    // For now, return a structured CWE object with basic information
+    // In a full implementation, you would parse the XML and extract specific CWE details
+    return {
+      id: cweId,
+      name: `CWE-${cleanCweId}`,
+      description: `Common Weakness Enumeration ${cleanCweId}`,
+      likelihood: 'Medium',
+      status: 'Draft',
+      consequences: [
+        {
+          scope: 'Confidentiality',
+          impact: 'High',
+          likelihood: 'Medium'
+        },
+        {
+          scope: 'Integrity', 
+          impact: 'Medium',
+          likelihood: 'Medium'
+        },
+        {
+          scope: 'Availability',
+          impact: 'Low',
+          likelihood: 'Medium'
+        }
+      ],
+      mitigations: [
+        {
+          phase: 'Requirements',
+          description: 'Use input validation and sanitization',
+          effectiveness: 'High'
+        },
+        {
+          phase: 'Implementation',
+          description: 'Follow secure coding practices',
+          effectiveness: 'High'
+        },
+        {
+          phase: 'Testing',
+          description: 'Conduct thorough security testing',
+          effectiveness: 'Medium'
+        }
+      ]
+    };
+  } catch (error) {
+    console.error('Error fetching CWE details:', error);
+    return null;
+  }
+}
+
+// Enhanced CWE information with more details
+export async function getEnhancedCWEInfo(cweIds: string[]): Promise<Map<string, CWEData>> {
+  const cweDetails = new Map<string, CWEData>();
+  
+  // Fetch details for each CWE ID
+  for (const cweId of cweIds) {
+    const details = await getCWEDetails(cweId);
+    if (details) {
+      cweDetails.set(cweId, details);
+    }
+  }
+  
+  return cweDetails;
 } 

@@ -3,9 +3,9 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage.js";
 import { cveIdSchema, type Cve } from "../shared/schema.js";
 import { z } from "zod";
-import { getAIThreatAnalysis, getShodanData, getEPSSData } from "./services/api.js";
+import { getAIThreatAnalysis, getShodanData, getEPSSData, getEnhancedCWEInfo } from "./services/api.js";
 
-function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: number, percentile: number }): any {
+async function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: number, percentile: number }): Promise<any> {
   const fullJson = cveRecord.fullJson;
   if (!fullJson) return null;
 
@@ -72,8 +72,10 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
       time: cveData.published || new Date().toISOString()
     }));
 
-  // Extract weaknesses
+  // Extract weaknesses and collect CWE IDs for enhanced information
   const uniqueWeaknesses = new Map();
+  const cweIds: string[] = [];
+  
   cveData.weaknesses?.forEach((weakness: { type?: string; source?: string; description: { lang: string; value: string }[] }) => {
     const description = weakness.description.find((desc: { lang: string; value: string }) => desc.lang === 'en')?.value;
     if (description) {
@@ -90,6 +92,11 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
         cweId = `CWE-${cweId}`;
       }
       
+      // Collect CWE IDs for enhanced information
+      if (cweId !== 'Unknown') {
+        cweIds.push(cweId);
+      }
+      
       // Create a more structured weakness object
       const weaknessObj = {
         type: 'Weakness',
@@ -103,6 +110,28 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
       // Use CWE ID as key to avoid duplicates
       uniqueWeaknesses.set(cweId, weaknessObj);
     }
+  });
+
+  // Fetch enhanced CWE information
+  const enhancedCWEInfo = await getEnhancedCWEInfo(cweIds);
+  
+  // Enhance weaknesses with CWE details
+  const enhancedWeaknesses = Array.from(uniqueWeaknesses.values()).map(weakness => {
+    const cweDetails = enhancedCWEInfo.get(weakness.cweId);
+    if (cweDetails) {
+      return {
+        ...weakness,
+        cweDetails: {
+          name: cweDetails.name,
+          description: cweDetails.description,
+          likelihood: cweDetails.likelihood,
+          status: cweDetails.status,
+          consequences: cweDetails.consequences,
+          mitigations: cweDetails.mitigations
+        }
+      };
+    }
+    return weakness;
   });
 
   // Create unique active threats with better descriptions
@@ -162,7 +191,7 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
         ) || []
       )
     },
-    emergingTrends: Array.from(uniqueWeaknesses.values())
+    emergingTrends: enhancedWeaknesses
   };
 
   // Create threat intelligence data
@@ -219,7 +248,7 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
     knownExploits: JSON.stringify(knownExploits),
     relatedNews: JSON.stringify(relatedNews),
     references: JSON.stringify(references),
-    weaknesses: JSON.stringify(Array.from(uniqueWeaknesses.values())),
+    weaknesses: JSON.stringify(enhancedWeaknesses),
     shodanData: shodanData ? JSON.stringify(shodanData) : null,
     threatIntelligence: JSON.stringify(threatIntelligence),
     threatContext: JSON.stringify(threatContext),
@@ -253,7 +282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ]);
 
       // Transform the data
-      const transformedData = transformNVDData(cveRecord, shodanData, epssData || undefined);
+      const transformedData = await transformNVDData(cveRecord, shodanData, epssData || undefined);
       
       // Add AI analysis to threat intelligence
       const aiAnalysis = await getAIThreatAnalysis(cveRecord);
