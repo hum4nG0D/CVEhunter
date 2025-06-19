@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Shield, Settings, Database, ShieldAlert, ChartLine, Bot } from "lucide-react";
+import { Shield, Settings, Database, ShieldAlert, ChartLine, Bot, Globe } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import CVESearch from "@/components/cve-search";
@@ -171,7 +171,7 @@ export default function Home() {
               <h4 className="text-lg font-bold text-[hsl(var(--matrix-green))] mb-4">DATA SOURCES</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Database className="w-4 h-4 mr-2 inline" />National Vulnerability Database (NVD)</li>
-                <li><ShieldAlert className="w-4 h-4 mr-2 inline" />Red Hat Security Advisories</li>
+                <li><Globe className="w-4 h-4 mr-2 inline" />SHODAN Threat Intelligence</li>
                 <li><ChartLine className="w-4 h-4 mr-2 inline" />EPSS Scoring System</li>
                 <li><Bot className="w-4 h-4 mr-2 inline" />AI-Enhanced Threat Analysis</li>
               </ul>

@@ -1,4 +1,4 @@
-import { Loader2, Database, Shield, TrendingUp } from "lucide-react";
+import { Loader2, Database, Shield, TrendingUp, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function LoadingState() {
@@ -17,8 +17,8 @@ export default function LoadingState() {
           </div>
           <div className="flex items-center justify-center space-x-2">
             <div className="w-2 h-2 bg-[hsl(var(--cyber-cyan))] rounded-full animate-pulse"></div>
-            <Shield className="w-4 h-4" />
-            <span>Fetching RHEL advisories...</span>
+            <Globe className="w-4 h-4" />
+            <span>Fetching SHODAN data...</span>
           </div>
           <div className="flex items-center justify-center space-x-2">
             <div className="w-2 h-2 bg-[hsl(var(--high))] rounded-full animate-pulse"></div>
