@@ -253,6 +253,155 @@
       border-color: hsl(var(--matrix-green));
     }
   }
+
+  /* Terminal-specific animations */
+  .terminal-cursor {
+    animation: terminal-blink 1s infinite;
+  }
+
+  @keyframes terminal-blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  /* Terminal scan effect */
+  .terminal-scan {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terminal-scan::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    animation: terminal-scan-animation 4s linear infinite;
+  }
+
+  @keyframes terminal-scan-animation {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  /* Terminal boot sequence */
+  .terminal-boot {
+    animation: terminal-boot-sequence 2s ease-in-out;
+  }
+
+  @keyframes terminal-boot-sequence {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Data stream effect */
+  .data-stream {
+    position: relative;
+  }
+
+  .data-stream::before {
+    content: '01';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+    animation: data-stream-animation 2s linear infinite;
+    font-family: monospace;
+    font-size: 8px;
+    color: hsl(var(--matrix-green));
+    opacity: 0.3;
+  }
+
+  @keyframes data-stream-animation {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  /* Terminal glow effect */
+  .terminal-glow {
+    box-shadow: 
+      0 0 20px rgba(0, 255, 65, 0.3),
+      0 0 40px rgba(0, 255, 65, 0.2),
+      0 0 60px rgba(0, 255, 65, 0.1);
+    animation: terminal-glow-pulse 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes terminal-glow-pulse {
+    0% {
+      box-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.3),
+        0 0 40px rgba(0, 255, 65, 0.2),
+        0 0 60px rgba(0, 255, 65, 0.1);
+    }
+    100% {
+      box-shadow: 
+        0 0 30px rgba(0, 255, 65, 0.4),
+        0 0 60px rgba(0, 255, 65, 0.3),
+        0 0 90px rgba(0, 255, 65, 0.2);
+    }
+  }
+
+  /* Matrix code rain for terminal */
+  .matrix-terminal {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .matrix-terminal::before {
+    content: '01';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 65, 0.1) 2px,
+      rgba(0, 255, 65, 0.1) 4px
+    );
+    animation: matrix-terminal-fall 8s linear infinite;
+    font-family: monospace;
+    font-size: 10px;
+    color: hsl(var(--matrix-green));
+    opacity: 0.2;
+  }
+
+  @keyframes matrix-terminal-fall {
+    0% {
+      transform: translateY(-50%);
+    }
+    100% {
+      transform: translateY(50%);
+    }
+  }
 }
 
 @layer utilities {
