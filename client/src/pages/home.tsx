@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Shield, Settings, Database, ShieldAlert, ChartLine, Bot, Globe } from "lucide-react";
+import { Shield, Settings, Database, ShieldAlert, ChartLine, Bot, Globe, Activity } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import CVESearch from "@/components/cve-search";
@@ -107,15 +107,18 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 border-b border-[hsl(var(--matrix-green))] bg-background/95 backdrop-blur-sm">
+      <header className="relative z-10 border-b border-[hsl(var(--matrix-green))] bg-background/95 backdrop-blur-sm shadow-[0_0_20px_rgba(0,255,65,0.3)]">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-[hsl(var(--matrix-green))] rounded-lg flex items-center justify-center pulse-green">
-                <Shield className="text-background text-xl" />
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--matrix-green))] to-[hsl(var(--cyber-cyan))] rounded-lg flex items-center justify-center pulse-green shadow-[0_0_15px_rgba(0,255,65,0.5)] hover:shadow-[0_0_25px_rgba(0,255,65,0.8)] transition-all duration-300">
+                  <Shield className="text-background text-xl" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-[hsl(var(--critical))] rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center">
+                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center glitch-text">
                   <span style={{ minWidth: `${fullTitle.length}em`, display: 'inline-block' }}>
                     {typedTitle}
                     <span
@@ -133,15 +136,26 @@ export default function Home() {
                     />
                   </span>
                 </h1>
-                <p className="text-sm text-muted-foreground">Cybersecurity Vulnerability Intelligence</p>
+                <p className="text-sm text-muted-foreground flex items-center">
+                  <span className="animate-pulse mr-2">⚡</span>
+                  Cybersecurity Vulnerability Intelligence
+                  <span className="animate-pulse ml-2">⚡</span>
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-2 text-sm">
-                <span className="text-muted-foreground">CVEs:</span>
-                <span className="text-[hsl(var(--matrix-green))]">{cveCount?.count || 0}</span>
-                <span className="text-muted-foreground mx-2">|</span>
-                <span className="text-muted-foreground">{new Date().toLocaleDateString()}</span>
+              <div className="hidden md:flex items-center space-x-4 text-sm">
+                <div className="bg-background/50 backdrop-blur-sm border border-[hsl(var(--matrix-green))]/30 rounded-lg px-3 py-2 hover:border-[hsl(var(--matrix-green))] transition-all duration-300">
+                  <span className="text-muted-foreground">CVEs:</span>
+                  <span className="text-[hsl(var(--matrix-green))] font-mono ml-1">{cveCount?.count || 0}</span>
+                </div>
+                <div className="bg-background/50 backdrop-blur-sm border border-[hsl(var(--cyber-cyan))]/30 rounded-lg px-3 py-2 hover:border-[hsl(var(--cyber-cyan))] transition-all duration-300">
+                  <span className="text-muted-foreground">Status:</span>
+                  <span className="text-[hsl(var(--cyber-cyan))] font-mono ml-1">ONLINE</span>
+                </div>
+                <div className="bg-background/50 backdrop-blur-sm border border-muted/30 rounded-lg px-3 py-2">
+                  <span className="text-muted-foreground font-mono">{new Date().toLocaleDateString()}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -164,30 +178,98 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-[hsl(var(--matrix-green))] bg-background/95 backdrop-blur-sm mt-16">
+      <footer className="relative z-10 border-t border-[hsl(var(--matrix-green))] bg-background/95 backdrop-blur-sm mt-16 shadow-[0_0_20px_rgba(0,255,65,0.2)]">
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-lg font-bold text-[hsl(var(--matrix-green))] mb-4">DATA SOURCES</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Database className="w-4 h-4 mr-2 inline" />National Vulnerability Database (NVD)</li>
-                <li><Globe className="w-4 h-4 mr-2 inline" />SHODAN Threat Intelligence</li>
-                <li><ChartLine className="w-4 h-4 mr-2 inline" />EPSS Scoring System</li>
-                <li><Bot className="w-4 h-4 mr-2 inline" />AI-Enhanced Threat Analysis</li>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-[hsl(var(--matrix-green))] mb-4 flex items-center">
+                <Database className="w-5 h-5 mr-2 animate-pulse" />
+                DATA SOURCES
+                <div className="ml-2 w-2 h-2 bg-[hsl(var(--matrix-green))] rounded-full animate-ping"></div>
+              </h4>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--matrix-green))]/20 hover:border-[hsl(var(--matrix-green))] transition-all duration-300">
+                  <Database className="w-4 h-4 mr-3 text-[hsl(var(--matrix-green))]" />
+                  <span className="text-muted-foreground">National Vulnerability Database (NVD)</span>
+                </li>
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--cyber-cyan))]/20 hover:border-[hsl(var(--cyber-cyan))] transition-all duration-300">
+                  <Globe className="w-4 h-4 mr-3 text-[hsl(var(--cyber-cyan))]" />
+                  <span className="text-muted-foreground">SHODAN Threat Intelligence</span>
+                </li>
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--high))]/20 hover:border-[hsl(var(--high))] transition-all duration-300">
+                  <ChartLine className="w-4 h-4 mr-3 text-[hsl(var(--high))]" />
+                  <span className="text-muted-foreground">EPSS Scoring System</span>
+                </li>
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--critical))]/20 hover:border-[hsl(var(--critical))] transition-all duration-300">
+                  <Bot className="w-4 h-4 mr-3 text-[hsl(var(--critical))]" />
+                  <span className="text-muted-foreground">AI-Enhanced Threat Analysis</span>
+                </li>
               </ul>
             </div>
-            <div>
-              <h4 className="text-lg font-bold text-[hsl(var(--cyber-cyan))] mb-4">FEATURES</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Shield className="w-4 h-4 mr-2 inline" />Advanced CVE Search & Analysis</li>
-                <li><Database className="w-4 h-4 mr-2 inline" />Risk Matrix Assessment</li>
-                <li><ShieldAlert className="w-4 h-4 mr-2 inline" />Threat Intelligence Integration</li>
-                <li><ChartLine className="w-4 h-4 mr-2 inline" />Exploit Prediction Scoring</li>
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-[hsl(var(--cyber-cyan))] mb-4 flex items-center">
+                <Shield className="w-5 h-5 mr-2 animate-pulse" />
+                FEATURES
+                <div className="ml-2 w-2 h-2 bg-[hsl(var(--cyber-cyan))] rounded-full animate-ping"></div>
+              </h4>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--cyber-cyan))]/20 hover:border-[hsl(var(--cyber-cyan))] transition-all duration-300">
+                  <Shield className="w-4 h-4 mr-3 text-[hsl(var(--cyber-cyan))]" />
+                  <span className="text-muted-foreground">Advanced CVE Search & Analysis</span>
+                </li>
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--matrix-green))]/20 hover:border-[hsl(var(--matrix-green))] transition-all duration-300">
+                  <Database className="w-4 h-4 mr-3 text-[hsl(var(--matrix-green))]" />
+                  <span className="text-muted-foreground">Risk Matrix Assessment</span>
+                </li>
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--high))]/20 hover:border-[hsl(var(--high))] transition-all duration-300">
+                  <ShieldAlert className="w-4 h-4 mr-3 text-[hsl(var(--high))]" />
+                  <span className="text-muted-foreground">Threat Intelligence Integration</span>
+                </li>
+                <li className="flex items-center p-2 bg-background/30 rounded-lg border border-[hsl(var(--critical))]/20 hover:border-[hsl(var(--critical))] transition-all duration-300">
+                  <ChartLine className="w-4 h-4 mr-3 text-[hsl(var(--critical))]" />
+                  <span className="text-muted-foreground">Exploit Prediction Scoring</span>
+                </li>
               </ul>
+            </div>
+            <div className="space-y-4">
+              <h4 className="text-lg font-bold text-[hsl(var(--high))] mb-4 flex items-center">
+                <Activity className="w-5 h-5 mr-2 animate-pulse" />
+                SYSTEM STATUS
+                <div className="ml-2 w-2 h-2 bg-[hsl(var(--high))] rounded-full animate-ping"></div>
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between p-2 bg-background/30 rounded-lg border border-[hsl(var(--matrix-green))]/20">
+                  <span className="text-muted-foreground">Database:</span>
+                  <span className="text-[hsl(var(--matrix-green))] font-mono">ONLINE</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-background/30 rounded-lg border border-[hsl(var(--cyber-cyan))]/20">
+                  <span className="text-muted-foreground">API Status:</span>
+                  <span className="text-[hsl(var(--cyber-cyan))] font-mono">ACTIVE</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-background/30 rounded-lg border border-[hsl(var(--high))]/20">
+                  <span className="text-muted-foreground">AI Engine:</span>
+                  <span className="text-[hsl(var(--high))] font-mono">READY</span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-background/30 rounded-lg border border-[hsl(var(--critical))]/20">
+                  <span className="text-muted-foreground">Security:</span>
+                  <span className="text-[hsl(var(--critical))] font-mono">SECURE</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="border-t border-muted mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 CVE Hunter - Advanced Cybersecurity Vulnerability Intelligence Platform</p>
+          <div className="border-t border-[hsl(var(--matrix-green))]/30 mt-8 pt-8 text-center">
+            <div className="flex items-center justify-center space-x-4 mb-4">
+              <div className="w-2 h-2 bg-[hsl(var(--matrix-green))] rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-[hsl(var(--cyber-cyan))] rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+              <div className="w-2 h-2 bg-[hsl(var(--high))] rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+              <div className="w-2 h-2 bg-[hsl(var(--critical))] rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+            </div>
+            <p className="text-sm text-muted-foreground font-mono">
+              &copy; 2025 CVE Hunter - Advanced Cybersecurity Vulnerability Intelligence Platform
+            </p>
+            <p className="text-xs text-muted-foreground mt-2 font-mono">
+              [SYSTEM_VERSION: 2.0.1] [BUILD: 2025.01.15] [STATUS: OPERATIONAL]
+            </p>
           </div>
         </div>
       </footer>

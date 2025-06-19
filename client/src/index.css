@@ -47,6 +47,214 @@
   }
 }
 
+@layer components {
+  /* Matrix rain animation */
+  .matrix-rain {
+    animation: matrix-rain 8s linear infinite;
+  }
+
+  @keyframes matrix-rain {
+    0% {
+      transform: translateY(-100vh);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+
+  /* Pulse green animation */
+  .pulse-green {
+    animation: pulse-green 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-green {
+    0% {
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 25px rgba(0, 255, 65, 0.8);
+    }
+  }
+
+  /* Glitch text effect */
+  .glitch-text {
+    position: relative;
+    animation: glitch 3s infinite;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch-text::before {
+    animation: glitch-1 0.5s infinite;
+    color: #00ffff;
+    z-index: -1;
+  }
+
+  .glitch-text::after {
+    animation: glitch-2 0.5s infinite;
+    color: #ff00ff;
+    z-index: -2;
+  }
+
+  @keyframes glitch {
+    0%, 100% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      transform: translate(-2px, -2px);
+    }
+    60% {
+      transform: translate(2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  @keyframes glitch-1 {
+    0%, 100% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      transform: translate(-2px, -2px);
+    }
+    60% {
+      transform: translate(2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  @keyframes glitch-2 {
+    0%, 100% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(2px, -2px);
+    }
+    40% {
+      transform: translate(2px, 2px);
+    }
+    60% {
+      transform: translate(-2px, -2px);
+    }
+    80% {
+      transform: translate(-2px, 2px);
+    }
+  }
+
+  /* Cyber card styling */
+  .cyber-card {
+    @apply border border-[hsl(var(--matrix-green))]/30 bg-card/50 backdrop-blur-sm;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .cyber-card:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+    border-color: hsl(var(--matrix-green));
+  }
+
+  /* Scanning line effect */
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scan-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(var(--matrix-green)), transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  @keyframes scan {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  /* Hover effects for interactive elements */
+  .hacker-hover {
+    transition: all 0.3s ease;
+  }
+
+  .hacker-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 255, 65, 0.3);
+  }
+
+  /* Status indicator animations */
+  .status-online {
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Typewriter effect for system text */
+  .typewriter {
+    overflow: hidden;
+    border-right: 2px solid hsl(var(--matrix-green));
+    white-space: nowrap;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+  }
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes blink-caret {
+    from, to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: hsl(var(--matrix-green));
+    }
+  }
+}
+
 @layer utilities {
   .matrix-bg::before {
     content: '';
