@@ -116,7 +116,7 @@ Keep the analysis concise but comprehensive. Focus on actionable insights for se
           content: prompt
         }
       ],
-      max_tokens: 400, // Increased token limit for more comprehensive analysis
+      max_tokens: 1500, // Increased token limit for more comprehensive analysis
       temperature: 0.7
     });
 
