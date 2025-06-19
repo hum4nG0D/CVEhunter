@@ -77,8 +77,18 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
   cveData.weaknesses?.forEach((weakness: { type?: string; source?: string; description: { lang: string; value: string }[] }) => {
     const description = weakness.description.find((desc: { lang: string; value: string }) => desc.lang === 'en')?.value;
     if (description) {
-      // Extract CWE ID from the type field (e.g., "CWE-79")
-      const cweId = weakness.type || 'Unknown';
+      // Extract CWE ID from the type field (e.g., "CWE-79" or "Primary:CWE-20")
+      let cweId = weakness.type || 'Unknown';
+      
+      // Clean up the CWE ID if it contains prefixes like "Primary:" or "Secondary:"
+      if (cweId.includes(':')) {
+        cweId = cweId.split(':')[1] || cweId;
+      }
+      
+      // Ensure it's a valid CWE format
+      if (!cweId.startsWith('CWE-') && cweId !== 'Unknown') {
+        cweId = `CWE-${cweId}`;
+      }
       
       // Create a more structured weakness object
       const weaknessObj = {
@@ -87,7 +97,6 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
         title: description,
         description: description,
         severity: severity || 'Unknown',
-        implication: 'This weakness could lead to security vulnerabilities if not properly addressed',
         source: weakness.source || 'NVD'
       };
       
