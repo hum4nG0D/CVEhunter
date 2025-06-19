@@ -10,10 +10,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Shodan API configuration
-const SHODAN_API_KEY = process.env.SHODAN_API_KEY;
-const SHODAN_API_BASE = 'https://api.shodan.io';
-
 // EPSS API configuration
 const EPSS_API_BASE = 'https://api.first.org/data/v1/epss';
 
@@ -141,53 +137,30 @@ Keep the analysis concise but comprehensive. Focus on actionable insights for se
 }
 
 export async function getShodanData(cveId: string) {
-  if (!SHODAN_API_KEY) {
-    console.log('Shodan API key not configured');
-    return null;
-  }
-
   try {
-    // Query the Shodan CVE database with the correct endpoint format
-    const response = await axios.get(`https://cvedb.shodan.io/cve/${cveId}`, {
-      params: {
-        key: SHODAN_API_KEY
-      }
-    });
+    // Query the Shodan CVE database - this is publicly accessible without API key
+    const cveResponse = await axios.get(`https://cvedb.shodan.io/cve/${cveId}`);
 
-    // If we have CVE data, also get the host search results
-    if (response.data) {
-      const hostResponse = await axios.get(`${SHODAN_API_BASE}/shodan/host/search`, {
-        params: {
-          key: SHODAN_API_KEY,
-          query: cveId,
-          limit: 100
-        }
-      });
+    return {
+      cveData: cveResponse.data ? {
+        summary: cveResponse.data.summary,
+        cvss: cveResponse.data.cvss,
+        cvss_version: cveResponse.data.cvss_version,
+        cvss_v2: cveResponse.data.cvss_v2,
+        cvss_v3: cveResponse.data.cvss_v3,
+        epss: cveResponse.data.epss,
+        ranking_epss: cveResponse.data.ranking_epss,
+        kev: cveResponse.data.kev,
+        propose_action: cveResponse.data.propose_action,
+        ransomware_campaign: cveResponse.data.ransomware_campaign,
+        references: cveResponse.data.references,
+        published_time: cveResponse.data.published_time,
+        cpes: cveResponse.data.cpes
+      } : null
+    };
 
-      return {
-        cveData: {
-          summary: response.data.summary,
-          cvss: response.data.cvss,
-          cvss_version: response.data.cvss_version,
-          cvss_v2: response.data.cvss_v2,
-          cvss_v3: response.data.cvss_v3,
-          epss: response.data.epss,
-          ranking_epss: response.data.ranking_epss,
-          kev: response.data.kev,
-          propose_action: response.data.propose_action,
-          ransomware_campaign: response.data.ransomware_campaign,
-          references: response.data.references,
-          published_time: response.data.published_time,
-          cpes: response.data.cpes
-        },
-        matches: hostResponse.data.matches || [],
-        total: hostResponse.data.total || 0
-      };
-    }
-
-    return null;
   } catch (error) {
-    console.error('Shodan API error:', error);
+    console.error('Shodan CVE database error:', error);
     return null;
   }
 }
@@ -215,17 +188,6 @@ export async function getEPSSData(cveId: string) {
 }
 
 export interface ShodanData {
-  total: number;
-  matches: Array<{
-    ip_str: string;
-    port: number;
-    country_name: string;
-    city: string;
-    latitude: number;
-    longitude: number;
-    data: string;
-    timestamp: string;
-  }>;
   cveData?: {
     summary: string;
     cvss: number;
