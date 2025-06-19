@@ -86,15 +86,54 @@ function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { score: n
     }
   });
 
+  // Create unique active threats with better descriptions
+  const uniqueThreats = new Map();
+  knownExploits.forEach((exp: { description: string; source: string }) => {
+    // Create a more meaningful description based on the source URL
+    let threatDescription = exp.description;
+    let threatType = 'Exploit';
+    let confidence = 'High';
+    
+    // Determine threat type and description based on source
+    if (exp.source.toLowerCase().includes('github.com')) {
+      threatType = 'Proof of Concept';
+      threatDescription = 'Public exploit code available on GitHub';
+    } else if (exp.source.toLowerCase().includes('exploit-db')) {
+      threatType = 'Exploit Database';
+      threatDescription = 'Exploit documented in Exploit Database';
+    } else if (exp.source.toLowerCase().includes('cve.mitre.org')) {
+      threatType = 'CVE Reference';
+      threatDescription = 'Official CVE reference and documentation';
+    } else if (exp.source.toLowerCase().includes('nvd.nist.gov')) {
+      threatType = 'NVD Reference';
+      threatDescription = 'National Vulnerability Database reference';
+    } else if (exp.source.toLowerCase().includes('poc')) {
+      threatType = 'Proof of Concept';
+      threatDescription = 'Proof of concept exploit available';
+    } else {
+      // Use the tags as description but make it more readable
+      const tags = exp.description.split(', ');
+      if (tags.length > 1) {
+        threatDescription = `${tags[0]} - ${tags.slice(1).join(', ')}`;
+      }
+    }
+    
+    // Use a combination of type and description as key to avoid duplicates
+    const key = `${threatType}-${threatDescription}`;
+    if (!uniqueThreats.has(key)) {
+      uniqueThreats.set(key, {
+        type: threatType,
+        description: threatDescription,
+        source: exp.source,
+        confidence: confidence
+      });
+    }
+  });
+
   // Create threat context
   const threatContext = {
     news: relatedNews,
-    activeThreats: knownExploits.map((exp: { description: string; source: string }) => ({
-      type: 'Exploit',
-      description: exp.description,
-      source: exp.source,
-      confidence: 'High'
-    })),
+    activeThreats: Array.from(uniqueThreats.values()),
     industryImpact: {
       severity: severity || 'Unknown',
       description: 'Based on CVSS severity and affected products',
