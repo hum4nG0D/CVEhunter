@@ -97,11 +97,11 @@ async function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { sc
         cweIds.push(cweId);
       }
       
-      // Create a more structured weakness object
+      // Create a more structured weakness object with the actual NVD description
       const weaknessObj = {
         type: 'Weakness',
         cweId: cweId,
-        title: description,
+        title: description, // This is the actual CWE description from NVD
         description: description,
         severity: severity || 'Unknown',
         source: weakness.source || 'NVD'
@@ -112,10 +112,10 @@ async function transformNVDData(cveRecord: Cve, shodanData: any, epssData?: { sc
     }
   });
 
-  // Fetch enhanced CWE information
+  // Fetch enhanced CWE information (but don't override NVD descriptions)
   const enhancedCWEInfo = await getEnhancedCWEInfo(cweIds);
   
-  // Enhance weaknesses with CWE details
+  // Enhance weaknesses with CWE details, but keep NVD descriptions
   const enhancedWeaknesses = Array.from(uniqueWeaknesses.values()).map(weakness => {
     const cweDetails = enhancedCWEInfo.get(weakness.cweId);
     if (cweDetails) {
