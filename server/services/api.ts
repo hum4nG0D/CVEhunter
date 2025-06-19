@@ -39,32 +39,97 @@ export async function getAIThreatAnalysis(cveRecord: Cve): Promise<AIAnalysis | 
     const description = cveData.descriptions?.find((d: { lang: string; value: string }) => d.lang === 'en')?.value || 'No description available';
     const cvssData = cveData.metrics?.cvssMetricV31?.[0]?.cvssData;
     const severity = cvssData?.baseSeverity || 'Unknown';
+    const cvssScore = cvssData?.baseScore || 'Unknown';
+    const attackVector = cvssData?.attackVector || 'Unknown';
+    const attackComplexity = cvssData?.attackComplexity || 'Unknown';
+    const privileges = cvssData?.privilegesRequired || 'Unknown';
+    const userInteraction = cvssData?.userInteraction || 'Unknown';
+    
+    // Extract CWE information
+    const cweIds = cveData.weaknesses?.map((w: any) => w.type?.replace('Primary:', '').replace('Secondary:', '') || 'Unknown').filter((id: string) => id !== 'Unknown') || [];
+    const cweInfo = cweIds.length > 0 ? `CWE IDs: ${cweIds.join(', ')}` : 'No CWE information available';
+    
+    // Extract timeline information
+    const published = cveData.published || 'Unknown';
+    const modified = cveData.lastModified || 'Unknown';
+    
+    // Extract references for exploitation status
+    const references = cveData.references || [];
+    const exploitRefs = references.filter((ref: any) => 
+      ref.tags?.includes('Exploit') || 
+      ref.url.toLowerCase().includes('exploit') || 
+      ref.url.toLowerCase().includes('poc') ||
+      ref.url.toLowerCase().includes('github.com')
+    );
+    const vendorRefs = references.filter((ref: any) => 
+      ref.tags?.includes('Vendor Advisory') || 
+      ref.tags?.includes('Patch')
+    );
 
-    // Create a more concise prompt to reduce token usage
-    const prompt = `Analyze CVE:
-Severity: ${severity}
-Description: ${description}
+    // Create a comprehensive prompt
+    const prompt = `Analyze CVE with the following information:
 
-Provide a brief analysis focusing on:
-1. Key risks
-2. Mitigation steps
-3. Priority level
+**Basic Information:**
+- Severity: ${severity} (CVSS: ${cvssScore})
+- Description: ${description}
+- ${cweInfo}
 
-Keep it concise.`;
+**CVSS Metrics:**
+- Attack Vector: ${attackVector}
+- Attack Complexity: ${attackComplexity}
+- Privileges Required: ${privileges}
+- User Interaction: ${userInteraction}
+
+**Timeline:**
+- Published: ${published}
+- Last Modified: ${modified}
+
+**References Found:**
+- Exploit References: ${exploitRefs.length} found
+- Vendor Advisories: ${vendorRefs.length} found
+
+Provide a comprehensive analysis covering:
+
+**1. Exploitation Status**
+- Is it known to be exploited in the wild?
+- Any public PoC/exploit available (e.g., Exploit-DB, GitHub)
+- Exploitation likelihood based on available references
+
+**2. Impact Analysis**
+- Confidentiality / Integrity / Availability impact
+- What can an attacker achieve?
+- Potential attack scenarios
+
+**3. Mitigation & Remediation**
+- Patched version(s) if available
+- Workarounds (if patch not available)
+- Vendor advisory links
+- Recommended immediate actions
+
+**4. CWE Context**
+- What type of weakness this represents
+- Common attack patterns for this CWE
+
+**5. Timeline Context**
+- Disclosure date significance
+- Patch availability timeline
+- First seen in the wild (if known)
+
+Keep the analysis concise but comprehensive. Focus on actionable insights for security teams.`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo", // Using the more cost-effective model
       messages: [
         {
           role: "system",
-          content: "You are a cybersecurity expert. Provide concise, actionable analysis."
+          content: "You are a senior cybersecurity expert with deep knowledge of vulnerability analysis, exploitation techniques, and incident response. Provide comprehensive, actionable analysis that helps security teams understand and respond to vulnerabilities effectively. Use clear, professional language and structure your response with headers for easy reading."
         },
         {
           role: "user",
           content: prompt
         }
       ],
-      max_tokens: 200, // Reduced token limit
+      max_tokens: 400, // Increased token limit for more comprehensive analysis
       temperature: 0.7
     });
 
