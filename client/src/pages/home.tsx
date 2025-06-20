@@ -11,7 +11,7 @@ export default function Home() {
   const [currentCVE, setCurrentCVE] = useState<CVEData | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const { data: cveCount } = useQuery({
+  const { data: cveCount } = useQuery<{ count: number }>({
     queryKey: ['/api/cve-count'],
   });
 
@@ -248,27 +248,14 @@ export default function Home() {
                 </div>
                 <div className="flex items-center justify-between p-2 bg-background/30 rounded-lg border border-[hsl(var(--high))]/20">
                   <span className="text-muted-foreground">AI Engine:</span>
-                  <span className="text-[hsl(var(--high))] font-mono">READY</span>
-                </div>
-                <div className="flex items-center justify-between p-2 bg-background/30 rounded-lg border border-[hsl(var(--critical))]/20">
-                  <span className="text-muted-foreground">Security:</span>
-                  <span className="text-[hsl(var(--critical))] font-mono">SECURE</span>
+                  <span className="text-[hsl(var(--high))] font-mono">OPERATIONAL</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="border-t border-[hsl(var(--matrix-green))]/30 mt-8 pt-8 text-center">
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <div className="w-2 h-2 bg-[hsl(var(--matrix-green))] rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-[hsl(var(--cyber-cyan))] rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-              <div className="w-2 h-2 bg-[hsl(var(--high))] rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-              <div className="w-2 h-2 bg-[hsl(var(--critical))] rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
-            </div>
-            <p className="text-sm text-muted-foreground font-mono">
-              &copy; 2025 CVE Hunter - Advanced Cybersecurity Vulnerability Intelligence Platform
-            </p>
-            <p className="text-xs text-muted-foreground mt-2 font-mono">
-              [SYSTEM_VERSION: 2.0.1] [BUILD: 2025.01.15] [STATUS: OPERATIONAL]
+          <div className="mt-12 pt-8 border-t border-[hsl(var(--matrix-green))]/20 text-center text-muted-foreground text-sm">
+            <p className="mt-2">
+              &copy; {new Date().getFullYear()} CVE Hunter. All rights reserved. Not for distribution or commercial use.
             </p>
           </div>
         </div>
