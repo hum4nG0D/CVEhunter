@@ -11,7 +11,7 @@ export default function Home() {
   const [currentCVE, setCurrentCVE] = useState<CVEData | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const { data: cveCount } = useQuery({
+  const { data: cveCount } = useQuery<{ count: number }>({
     queryKey: ['/api/cve-count'],
   });
 
@@ -118,8 +118,11 @@ export default function Home() {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-[hsl(var(--critical))] rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center glitch-text">
-                  <span style={{ minWidth: `${fullTitle.length}em`, display: 'inline-block' }}>
+                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center glitch-text relative">
+                  {/* Invisible text to reserve space */}
+                  <span className="opacity-0">{fullTitle}</span>
+                  {/* Animated text */}
+                  <span className="absolute left-0 top-0">
                     {typedTitle}
                     <span
                       className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
