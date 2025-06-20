@@ -141,7 +141,7 @@ export async function getShodanData(cveId: string) {
     // Query the Shodan CVE database - this is publicly accessible without API key
     const cveResponse = await axios.get(`https://cvedb.shodan.io/cve/${cveId}`);
 
-    return {
+      return {
       cveData: cveResponse.data ? {
         summary: cveResponse.data.summary,
         cvss: cveResponse.data.cvss,

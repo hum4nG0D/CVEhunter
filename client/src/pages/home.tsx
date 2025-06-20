@@ -11,7 +11,7 @@ export default function Home() {
   const [currentCVE, setCurrentCVE] = useState<CVEData | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const { data: cveCount } = useQuery<{ count: number }>({
+  const { data: cveCount } = useQuery({
     queryKey: ['/api/cve-count'],
   });
 
@@ -113,16 +113,13 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <div className="w-12 h-12 bg-gradient-to-br from-[hsl(var(--matrix-green))] to-[hsl(var(--cyber-cyan))] rounded-lg flex items-center justify-center pulse-green shadow-[0_0_15px_rgba(0,255,65,0.5)] hover:shadow-[0_0_25px_rgba(0,255,65,0.8)] transition-all duration-300">
-                  <Shield className="text-background text-xl" />
+                <Shield className="text-background text-xl" />
                 </div>
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-[hsl(var(--critical))] rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center glitch-text relative">
-                  {/* Invisible text to reserve space */}
-                  <span className="opacity-0">{fullTitle}</span>
-                  {/* Animated text */}
-                  <span className="absolute left-0 top-0">
+                <h1 className="text-2xl font-bold text-[hsl(var(--matrix-green))] font-mono flex items-center glitch-text">
+                  <span style={{ minWidth: `${fullTitle.length}em`, display: 'inline-block' }}>
                     {typedTitle}
                     <span
                       className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
@@ -149,7 +146,7 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <div className="hidden md:flex items-center space-x-4 text-sm">
                 <div className="bg-background/50 backdrop-blur-sm border border-[hsl(var(--matrix-green))]/30 rounded-lg px-3 py-2 hover:border-[hsl(var(--matrix-green))] transition-all duration-300">
-                  <span className="text-muted-foreground">CVEs:</span>
+                <span className="text-muted-foreground">CVEs:</span>
                   <span className="text-[hsl(var(--matrix-green))] font-mono ml-1">{cveCount?.count || 0}</span>
                 </div>
                 <div className="bg-background/50 backdrop-blur-sm border border-[hsl(var(--cyber-cyan))]/30 rounded-lg px-3 py-2 hover:border-[hsl(var(--cyber-cyan))] transition-all duration-300">
